@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A cinematic birthday experience crafted with love — Happy Birthday, Harshita." />
+  <title>Happy Birthday, Harshita ✦</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 0 — LOADING SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="loader" aria-label="Loading screen" role="status">
+    <canvas id="loader-stars" aria-hidden="true"></canvas>
+
+    <div class="loader-content">
+      <div class="loader-tulip-wrap" aria-hidden="true">
+        <!-- SVG Tulip Outline -->
+        <svg class="loader-tulip" viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- Stem -->
+          <path class="tulip-path tulip-stem" d="M60 170 C60 140 55 120 60 100" stroke="#A855F7" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Leaf left -->
+          <path class="tulip-path tulip-leaf-l" d="M60 130 C40 120 25 108 30 90 C45 98 58 115 60 130Z" stroke="#C4B5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Leaf right -->
+          <path class="tulip-path tulip-leaf-r" d="M60 118 C80 108 95 96 90 78 C75 86 62 103 60 118Z" stroke="#C4B5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Petal back left -->
+          <path class="tulip-path tulip-petal-bl" d="M60 100 C48 100 34 85 36 68 C38 52 52 48 60 58Z" stroke="#A855F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Petal back right -->
+          <path class="tulip-path tulip-petal-br" d="M60 100 C72 100 86 85 84 68 C82 52 68 48 60 58Z" stroke="#A855F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Petal front center -->
+          <path class="tulip-path tulip-petal-c" d="M60 100 C48 92 42 72 48 55 C52 44 60 40 60 40 C60 40 68 44 72 55 C78 72 72 92 60 100Z" stroke="#C4B5FD" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Glow dot -->
+          <circle class="tulip-glow" cx="60" cy="40" r="4" fill="#C4B5FD" opacity="0"/>
+        </svg>
+        <div class="loader-glow" aria-hidden="true"></div>
+      </div>
+
+      <p class="loader-text" aria-live="polite">Preparing something special<span class="loader-dots">...</span></p>
+
+      <div class="loader-bar-wrap" aria-hidden="true">
+        <div class="loader-bar">
+          <div class="loader-bar-fill" id="loader-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Audio element (moved out of removed modal) -->
+  <audio id="bg-music" preload="auto">
+    <source src="assets/music/Forever.mp3" type="audio/mpeg" />
+  </audio>
+
+
+  <!-- Hint text above music player — fades out once music starts -->
+  <div id="music-hint" aria-hidden="true">Play the music cutie ❤️</div>
+
+  <!-- Music Controls (persistent, bottom-right) -->
+  <div id="music-controls" class="music-controls" aria-label="Music controls" hidden>
+
+    <!-- Spinning disc -->
+    <div class="music-disc" id="music-disc" aria-hidden="true">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="13" fill="#1a1030" stroke="rgba(196,181,253,0.3)" stroke-width="1"/>
+        <circle cx="14" cy="14" r="8" fill="rgba(124,58,237,0.25)" stroke="rgba(168,85,247,0.3)" stroke-width="0.8"/>
+        <circle cx="14" cy="14" r="3" fill="rgba(196,181,253,0.8)"/>
+        <circle cx="14" cy="7.5" r="1" fill="rgba(196,181,253,0.4)"/>
+        <circle cx="19.5" cy="17" r="0.8" fill="rgba(168,85,247,0.4)"/>
+      </svg>
+    </div>
+
+    <!-- Play / Pause -->
+    <button id="btn-music-toggle" class="music-btn" aria-label="Pause music">
+      <svg id="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <polygon points="5 3 19 12 5 21 5 3"/>
+      </svg>
+      <svg id="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="display:none">
+        <line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/>
+      </svg>
+    </button>
+
+    <!-- Tiny equalizer bars (visible only while playing) -->
+    <div class="music-eq" id="music-eq" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+
+    <!-- Progress bar + time -->
+    <div class="music-progress-wrap">
+      <div class="music-progress-bar" id="music-progress-bar" role="progressbar" aria-label="Song progress">
+        <div class="music-progress-fill" id="music-progress-fill"></div>
+      </div>
+      <span class="music-time" id="music-time">0:00</span>
+    </div>
+
+    <!-- Volume slider -->
+    <input type="range" id="volume-slider" min="0" max="1" step="0.02" value="0.35" aria-label="Volume" />
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN SITE WRAPPER
+  ═══════════════════════════════════════════ -->
+  <main id="main-site" aria-label="Birthday experience" hidden>
+
+    <!-- ─── SECTION: HERO ─────────────────────────────── -->
+    <section id="hero" class="section-hero" aria-label="Birthday hero">
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+
+      <!-- Floating particles -->
+      <div class="hero-particles" aria-hidden="true" id="hero-particles"></div>
+
+      <!-- Moon -->
+      <div class="hero-moon" aria-hidden="true">
+        <div class="moon-glow"></div>
+        <div class="moon-body"></div>
+        <div class="moon-craters">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <!-- Moon whisper message -->
+      <p class="moon-whisper" aria-label="A romantic whisper">
+        The moon is beautiful,<br/>isn't it?
+      </p>
+
+      <div class="hero-content">
+        <p class="hero-date reveal-item" aria-label="Today's occasion">July 26, 2026 ✦ A Special Day</p>
+
+        <h1 class="hero-happy reveal-item" aria-label="Happy Birthday">
+          <span class="word">Happy</span>
+          <span class="word">Birthday</span>
+        </h1>
+
+        <div class="hero-name-wrap reveal-item">
+          <span class="hero-name" aria-label="Harshita">Harshita</span>
+          <span class="hero-name-glow" aria-hidden="true">Harshita</span>
+        </div>
+
+        <!-- Birthday Cake -->
+        <div class="cake-wrap reveal-item" aria-hidden="true">
+          <div class="cake">
+            <!-- Candles -->
+            <div class="candles" id="candles-container">
+              <div class="candle" id="candle-1">
+                <div class="flame" id="flame-1"><div class="flame-inner"></div></div>
+                <div class="candle-smoke" id="smoke-1" aria-hidden="true"></div>
+              </div>
+              <div class="candle" id="candle-2">
+                <div class="flame" id="flame-2"><div class="flame-inner"></div></div>
+                <div class="candle-smoke" id="smoke-2" aria-hidden="true"></div>
+              </div>
+              <div class="candle" id="candle-3">
+                <div class="flame" id="flame-3"><div class="flame-inner"></div></div>
+                <div class="candle-smoke" id="smoke-3" aria-hidden="true"></div>
+              </div>
+            </div>
+            <!-- Cake body -->
+            <div class="cake-top">
+              <div class="cake-top-deco">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="cake-middle">
+              <div class="cake-frosting"></div>
+            </div>
+            <div class="cake-bottom">
+              <div class="cake-frosting"></div>
+            </div>
+            <div class="cake-plate"></div>
+          </div>
+        </div>
+
+        <button id="celebrate-btn" class="btn btn-celebrate reveal-item" aria-label="Click to celebrate with confetti">
+          Celebrate ✦
+        </button>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator reveal-item" aria-hidden="true">
+        <span>Scroll to explore</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: MEMORY GALLERY ───────────────────── -->
+    <section id="gallery" class="section-gallery" aria-label="Memory gallery">
+      <div class="section-header">
+        <p class="section-label gallery-reveal">Cherished Moments</p>
+        <h2 class="section-title gallery-reveal">A Gallery of <em>Memories</em></h2>
+        <p class="section-sub gallery-reveal">Every picture holds a universe of feelings.</p>
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid" role="list" aria-label="Photo gallery">
+        <!-- 20 Photo Cards — generated in JS, or hardcoded here -->
+        <!-- Each card: data-index, data-caption placeholder -->
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="0" tabindex="0" aria-label="Memory photo 1">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_01.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption">
+              <p>Caption for Memory 01</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="1" tabindex="0" aria-label="Memory photo 2">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_02.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 02</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="2" tabindex="0" aria-label="Memory photo 3">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_03.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 03</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="3" tabindex="0" aria-label="Memory photo 4">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_04.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 04</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="4" tabindex="0" aria-label="Memory photo 5">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_05.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 05</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="5" tabindex="0" aria-label="Memory photo 6">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_06.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 06</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="6" tabindex="0" aria-label="Memory photo 7">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_07.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 07</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="7" tabindex="0" aria-label="Memory photo 8">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_08.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 08</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="8" tabindex="0" aria-label="Memory photo 9">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_09.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 09</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="9" tabindex="0" aria-label="Memory photo 10">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_10.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 10</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="10" tabindex="0" aria-label="Memory photo 11">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_11.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 11</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="11" tabindex="0" aria-label="Memory photo 12">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_12.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 12</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="12" tabindex="0" aria-label="Memory photo 13">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_13.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 13</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="13" tabindex="0" aria-label="Memory photo 14">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_14.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 14</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="14" tabindex="0" aria-label="Memory photo 15">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_15.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 15</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="15" tabindex="0" aria-label="Memory photo 16">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_16.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 16</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="16" tabindex="0" aria-label="Memory photo 17">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_17.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 17</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="17" tabindex="0" aria-label="Memory photo 18">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_18.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 18</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="18" tabindex="0" aria-label="Memory photo 19">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_19.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 19</p></div>
+          </div>
+        </div>
+
+        <div class="gallery-card gallery-reveal" role="listitem" data-index="19" tabindex="0" aria-label="Memory photo 20">
+          <div class="gallery-card-inner">
+            <div class="gallery-img-wrap">
+              <img src="assets/images/PHOTO_20.jpg" alt="A cherished memory" loading="lazy" decoding="async" />
+            </div>
+            <div class="gallery-caption"><p>Caption for Memory 20</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Photo preview" hidden>
+      <div class="lightbox-backdrop"></div>
+      <div class="lightbox-content">
+        <button class="lightbox-close" id="lightbox-close" aria-label="Close preview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="lightbox-media" id="lightbox-media">
+          <div class="lightbox-placeholder" id="lightbox-placeholder">
+            <span class="placeholder-icon">✦</span>
+            <span id="lightbox-label">PHOTO_01</span>
+          </div>
+        </div>
+        <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="lightbox-caption" id="lightbox-caption">Caption for Memory 01</div>
+        <div class="lightbox-counter" id="lightbox-counter">1 / 20</div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION: LETTER ───────────────────────────── -->
+    <section id="letter" class="section-letter" aria-label="Birthday letter">
+      <div class="section-header">
+        <p class="section-label letter-reveal">From the Heart</p>
+        <h2 class="section-title letter-reveal">A Letter, <em>Just for You</em></h2>
+      </div>
+
+      <div class="envelope-scene" id="envelope-scene" role="button" tabindex="0" aria-label="Click to open the letter" aria-expanded="false">
+        <!-- Envelope SVG -->
+        <div class="envelope-wrap letter-reveal">
+          <div class="envelope" id="envelope">
+            <!-- Envelope body -->
+            <div class="envelope-body">
+              <div class="env-bottom"></div>
+              <div class="env-left"></div>
+              <div class="env-right"></div>
+              <div class="env-flap" id="env-flap"></div>
+
+              <!-- Wax seal -->
+              <div class="wax-seal" id="wax-seal" aria-hidden="true">
+                <span class="seal-letter">H</span>
+              </div>
+
+              <!-- Paper inside envelope -->
+              <div class="letter-paper" id="letter-paper">
+                <div class="letter-paper-inner">
+                  <div class="letter-lines" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="letter-body">
+                    <p class="letter-salutation">My dearest Harshita,</p>
+                    <div class="letter-content" id="letter-content" aria-live="polite">
+                      <!-- Letter content will be typed here -->
+                    </div>
+                    <div class="letter-signature" id="letter-signature">
+                      <p class="sig-line">With all my love,</p>
+                      <p class="sig-name">{{YOUR_NAME}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="envelope-hint" id="envelope-hint">Click the envelope to open ↑</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: FINALE ───────────────────────────── -->
+    <section id="finale" class="section-finale" aria-label="Final birthday celebration">
+      <canvas id="fireworks-canvas" aria-hidden="true"></canvas>
+
+      <!-- Falling petals -->
+      <div class="petals-container" id="petals-container" aria-hidden="true"></div>
+
+      <div class="finale-content">
+        <div class="finale-photo-frame finale-reveal" aria-label="Favourite photo">
+          <div class="finale-photo-inner">
+            <img
+              src="assets/images/FAVOURITE_PHOTO.jpg"
+              alt="The most cherished memory"
+              id="favourite-photo"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+          <div class="finale-photo-glow" aria-hidden="true"></div>
+        </div>
+
+        <div class="finale-message finale-reveal">
+          <p class="finale-sub">On this beautiful day,</p>
+          <h2 class="finale-title">May every dream you've<br/>ever whispered to the stars<br/><em>come true.</em></h2>
+          <p class="finale-tagline">
+            <!-- Replace this placeholder with your personal message -->
+            {{FINAL_BIRTHDAY_MESSAGE}}
+          </p>
+        </div>
+
+        <div class="finale-divider finale-reveal" aria-hidden="true">
+          <span></span><span class="star-dot">✦</span><span></span>
+        </div>
+
+        <p class="finale-love finale-reveal">Your Nayraa loves you a lot ❤️</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer id="footer" class="site-footer" role="contentinfo">
+
+    <!-- Ambient canvas: stars, petals, orbs -->
+    <canvas id="footer-canvas" class="footer-canvas" aria-hidden="true"></canvas>
+
+    <!-- Ambient radial glow behind footer -->
+    <div class="footer-ambient-glow" aria-hidden="true"></div>
+
+    <!-- Decorative flower corners -->
+    <div class="footer-flower footer-flower-bl" aria-hidden="true">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g opacity="0.35">
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#A855F7" transform="rotate(0 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#C4B5FD" transform="rotate(45 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#A855F7" transform="rotate(90 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#C4B5FD" transform="rotate(135 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#A855F7" transform="rotate(180 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#C4B5FD" transform="rotate(225 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#A855F7" transform="rotate(270 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#C4B5FD" transform="rotate(315 40 40)"/>
+          <circle cx="40" cy="40" r="7" fill="#E8DEFF"/>
+        </g>
+      </svg>
+    </div>
+    <div class="footer-flower footer-flower-br" aria-hidden="true">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g opacity="0.35">
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#A855F7" transform="rotate(0 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#C4B5FD" transform="rotate(45 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#A855F7" transform="rotate(90 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#C4B5FD" transform="rotate(135 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#A855F7" transform="rotate(180 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#C4B5FD" transform="rotate(225 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#A855F7" transform="rotate(270 40 40)"/>
+          <ellipse cx="40" cy="20" rx="8" ry="16" fill="#C4B5FD" transform="rotate(315 40 40)"/>
+          <circle cx="40" cy="40" r="7" fill="#E8DEFF"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Glowing divider -->
+    <div class="footer-glow-divider" aria-hidden="true"></div>
+
+    <!-- Glass content wrapper -->
+    <div class="footer-glass-content">
+      <div class="footer-radial-glow" aria-hidden="true"></div>
+      <div class="footer-line" aria-hidden="true"></div>
+      <p class="footer-text">Made with <span class="footer-heart" aria-label="love">❤</span> for <span class="footer-name">Harshita</span></p>
+      <p class="footer-year">Made with every star in the sky ✦</p>
+    </div>
+
+  </footer>
+
+  <!-- Main Script -->
+  <script src="script.js"></script>
+</body>
+</html>
