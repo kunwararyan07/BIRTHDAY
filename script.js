@@ -13,7 +13,7 @@ const CONFIG = {
   par ye cheez ke tere liye aise website bana kar host kar ke 
   sirf tere liye kishi ne nhi kia hoga and obviusly I want to do that things 
   for you jo ki ajj tak kishi ne nhi ki as I want to be the first person to 
-  be the one who did this fro you........But in sab ka ye mtlb mat nikal lena ki 
+  be the one who did this for you........But in sab ka ye mtlb mat nikal lena ki 
   i will never write a love leter for you offcourse i will baby ye toh is liye kia
   taki aisa sabse alag dekhe mere cheez and i hope jab tu ye sab read kar rhi ho mai 
   tere bagal me hounga soo pleasee kiss me tight after reading this line 
@@ -30,7 +30,7 @@ Happy Birthday, Harshita My BAby My Cutie My Pretty bitch 🌸
 
 May this year be the most extraordinary yet.`,
   
-  FINAL_MESSAGE: `This little corner of the internet was made with love, for you. No matter where you are or how far life takes you — know that you are celebrated, cherished, and deeply loved.`,
+  FINAL_MESSAGE: `This little corner of the internet was made with love, for you. No matter where you are or how far life takes you — know that you are celebrated, cherished, and deeply loved, WILL YOU mARRY ME?(JUST ASKING)`,
   
   SENDER_NAME: `{{YOUR_NAYRAAAA}}`,
 
